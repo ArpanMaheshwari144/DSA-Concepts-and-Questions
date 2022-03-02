@@ -35,7 +35,7 @@ struct Node *createTree()
     return root;
 }
 
-vector<int> verticalOrder(Node *root)
+vector<int> verticalOrder(struct Node *root)
 {
     // nodes has 3 elements 1.horizontal distance 2.level 3.list nodes
     map<int, map<int, vector<int>>> nodes;
