@@ -1,32 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void dfs(int v, vector<int> adj[], bool vis[], vector<int> &ans)
+bool dfs(int v, vector<int> adj[], bool vis[], bool recStack[])
 {
     vis[v] = true;
-    ans.push_back(v);
+    recStack[v] = true;
+
     for (int neighbor : adj[v])
     {
         if (!vis[neighbor])
         {
-            dfs(neighbor, adj, vis, ans);
+            if (dfs(neighbor, adj, vis, recStack))
+            {
+                return true;
+            }
+        }
+        else if (recStack[neighbor])
+        {
+            return true;
         }
     }
+    recStack[v] = false; // backtrack
+    return false;
 }
 
-vector<int> dfsOfGraph(int V, vector<int> adj[])
+bool isCyclic(int V, vector<int> adj[])
 {
     bool vis[V];
-    vector<int> ans;
+    bool recStack[V];
+
     for (int i = 0; i < V; i++)
     {
         if (!vis[i])
         {
-            dfs(i, adj, vis, ans);
+            if (dfs(i, adj, vis, recStack))
+            {
+                return true;
+            }
         }
     }
-
-    return ans;
+    return false;
 }
 
 int main()
@@ -45,15 +58,15 @@ int main()
         int u, v;
         cin >> u >> v;
         adj[u].push_back(v);
-        adj[v].push_back(u);
     }
 
-    vector<int> ans = dfsOfGraph(n, adj);
-
-    cout << "DFS path of this graph is: ";
-    for (int i = 0; i < ans.size(); i++)
+    if (isCyclic(n, adj))
     {
-        cout << ans[i] << " ";
+        cout << "Cycle is present";
+    }
+    else
+    {
+        cout << "Cycle is not present";
     }
 
     return 0;
