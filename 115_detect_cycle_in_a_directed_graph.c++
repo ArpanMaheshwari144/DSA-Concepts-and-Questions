@@ -1,11 +1,10 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-bool dfs(int v, vector<int> adj[], bool vis[], bool recStack[])
+bool dfs(int v, vector<int> adj[], vector<bool> &vis, vector<bool> &recStack)
 {
     vis[v] = true;
     recStack[v] = true;
-
     for (int neighbor : adj[v])
     {
         if (!vis[neighbor])
@@ -26,14 +25,13 @@ bool dfs(int v, vector<int> adj[], bool vis[], bool recStack[])
 
 bool isCyclic(int V, vector<int> adj[])
 {
-    bool vis[V];
-    bool recStack[V];
-
+    vector<bool> vis(V, false);
+    vector<bool> recstack(V, false);
     for (int i = 0; i < V; i++)
     {
         if (!vis[i])
         {
-            if (dfs(i, adj, vis, recStack))
+            if (dfs(i, adj, vis, recstack))
             {
                 return true;
             }
