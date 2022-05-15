@@ -18,7 +18,6 @@ class Compare
 public:
     bool operator()(Pair &a, Pair &b)
     {
-        // sort in ascending order
         return (a.wt > b.wt);
     }
 };

@@ -3,89 +3,111 @@ using namespace std;
 
 class Edge
 {
-    int *parent;
-
 public:
-    Edge(int n)
+    int src, dest, wt;
+    Edge(int src, int dest, int wt)
     {
-        parent = new int[n];
-        for (int i = 0; i < n; i++)
+        this->src = src;
+        this->dest = dest;
+        this->wt = wt;
+    }
+};
+class Solution
+{
+    int find(int x, vector<int> &parent)
+    {
+        if (parent[x] != x)
         {
-            parent[i] = i;
+            parent[x] = find(parent[x], parent);
         }
+        return parent[x];
     }
 
-    int find(int x)
+    void doUnion(int x, int y, vector<int> &parent, vector<int> &rank)
     {
-        if (parent[x] == x)
-        {
-            return x;
-        }
-        return find(parent[x]);
-    }
-
-    void doUnion(int x, int y)
-    {
-        int rx = find(x);
-        int ry = find(y);
-
-        if (rx == ry)
+        int xRoot = find(x, parent), yRoot = find(y, parent);
+        if (xRoot == yRoot)
         {
             return;
         }
-        parent[ry] = rx;
-    }
-};
 
-class Graph
-{
-    int n;
-    vector<vector<int>> adj;
+        if (rank[xRoot] < rank[yRoot])
+        {
+            parent[xRoot] = yRoot;
+        }
+        else if (rank[yRoot] < rank[xRoot])
+        {
+            parent[yRoot] = xRoot;
+        }
+        else
+        {
+            parent[yRoot] = xRoot;
+            rank[xRoot]++;
+        }
+    }
+
+    static bool cmp(Edge &a, Edge &b)
+    {
+        return a.wt < b.wt;
+    }
 
 public:
-    Graph(int n)
+    int spanningTree(int V, vector<vector<int>> adj[])
     {
-        this->n = n;
-    }
-
-    void addEdge(int u, int v, int wt)
-    {
-        // we have to add weight first bcoz we have to sort accoroding to weights
-        adj.push_back({wt, u, v});
-    }
-
-    void MST()
-    {
-        Edge e(n);
-
-        // sort according to weights bcoz weight is in adj[0]
-        sort(adj.begin(), adj.end());
-        int ans = 0;
-        for (auto edge : adj)
+        vector<Edge> edges;
+        for (int i = 0; i < V; i++)
         {
-            int wt = edge[0];
-            int src = edge[1];
-            int dest = edge[2];
-
-            // take that edge in MST if it does form a cycle
-            if (e.find(src) != e.find(dest))
+            for (auto vec : adj[i])
             {
-                e.doUnion(src, dest);
-                ans += wt;
+                edges.push_back(Edge(i, vec[0], vec[1]));
             }
         }
-        cout << "Minimum Cost Spanning Tree: " << ans;
+
+        int cost = 0;
+        vector<int> rank(V, 0);
+        vector<int> parent(V);
+        for (int i = 0; i < V; i++)
+        {
+            parent[i] = i;
+        }
+
+        sort(edges.begin(), edges.end(), cmp);
+
+        for (auto it : edges)
+        {
+            if (find(it.src, parent) != find(it.dest, parent))
+            {
+                doUnion(it.src, it.dest, parent, rank);
+                cost += it.wt;
+            }
+        }
+        return cost;
     }
 };
+
 int main()
 {
-    Graph g(4);
-    g.addEdge(0, 1, 10);
-    g.addEdge(1, 3, 15);
-    g.addEdge(2, 3, 4);
-    g.addEdge(2, 0, 6);
-    g.addEdge(0, 3, 5);
-    g.MST();
+    int V, E;
+    cout << "Enter the number of vertices and edges: ";
+    cin >> V >> E;
+
+    vector<vector<int>> adj[V];
+    int i = 0;
+    while (i++ < E)
+    {
+        int u, v, w;
+        cin >> u >> v >> w;
+        vector<int> t1, t2;
+        t1.push_back(v);
+        t1.push_back(w);
+        adj[u].push_back(t1);
+        t2.push_back(u);
+        t2.push_back(w);
+        adj[v].push_back(t2);
+    }
+
+    Solution obj;
+    cout << "The MST is: " << obj.spanningTree(V, adj);
 
     return 0;
 }
