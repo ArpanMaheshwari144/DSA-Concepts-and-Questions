@@ -3,7 +3,6 @@ using namespace std;
 
 class Edge
 {
-public:
     int *parent;
 
 public:
