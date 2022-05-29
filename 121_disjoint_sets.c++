@@ -12,7 +12,7 @@ public:
         rank = new int[n];
         parent = new int[n];
         this->n = n;
-        for (int i = 0; i < n; i++)
+        for (int i = 1; i <= n; i++)
         {
             parent[i] = i;
         }
@@ -52,7 +52,7 @@ public:
 
     void print()
     {
-        for (int i = 0; i < n; i++)
+        for (int i = 1; i <= n; i++)
         {
             cout << parent[i] << " ";
         }
@@ -62,7 +62,6 @@ public:
 int main()
 {
     DisjointSets obj(7);
-    obj.doUnion(0, 1);
     obj.doUnion(1, 2);
     obj.doUnion(2, 3);
     obj.doUnion(3, 4);
