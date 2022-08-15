@@ -40,6 +40,13 @@ vector<int> maxMeetings(int N, vector<int> &S, vector<int> &F)
         a[i].end = F[i];
     }
     sort(a, a + N, cmp);
+    // for (int i = 0; i < N; i++)
+    // {
+    //     cout << a[i].pos << endl;
+    //     cout << a[i].start << endl;
+    //     cout << a[i].end << endl;
+    // }
+
     int r = a[0].end;
     ans.push_back(a[0].pos);
     for (int i = 1; i < N; i++)
